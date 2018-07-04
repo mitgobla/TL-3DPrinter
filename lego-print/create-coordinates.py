@@ -10,28 +10,32 @@ Each position has 4 values:
     c: the block colour
     c = 0 - 3; 0 being none
 """
-coordinates = [
+model_coordinates = [
     [3, 3, 1, 1],
-    [10, 10, 5, 0],
-    [0, 0, 1, 0]
+    [3, 3, 2, 2],
+    [3, 3, 3, 3],
+    [3, 3, 4, 2],
+    [3, 3, 5, 1],
+    [3, 3, 7, 0]
 ]
 
-for pos in range(len(coordinates)):
+coordinates = []
+for pos in range(0, len(model_coordinates), 1):
     #write each number on a new line
-    if coordinates[pos][3] == 1:
-        coordinates.insert(pos, [-9, 1, 15, 0])
-        coordinates.insert(pos, [-9, 1, 15, 0])
-        coordinates.insert(pos, [-9, 1, 15, 4])
-    elif coordinates[pos][3] == 2:
-        coordinates.insert(pos, [-9, 6, 15, 0])
-        coordinates.insert(pos, [-9, 6, 15, 0])
-        coordinates.insert(pos, [-9, 6, 15, 4])
-    elif coordinates[pos][3] == 3:
-        coordinates.insert(pos, [-9, 12, 15, 0])
-        coordinates.insert(pos, [-9, 12, 15, 0])
-        coordinates.insert(pos, [-9, 12, 15, 4])
-        
 
+    if model_coordinates[pos][3] == 1:
+        coordinates.append([-10, 1, 1.2, 0])
+        print("red")
+    elif model_coordinates[pos][3] == 2:
+        coordinates.append([-10, 7, 1.2, 0])
+        print("blue")
+    elif model_coordinates[pos][3] == 3:
+        coordinates.append([-10, 13, 1.2, 0])
+        print("yellow")
+    coordinates.append(model_coordinates[pos])
+
+#coordinates.reverse()
+print(coordinates)
 model = open('./coordinates/model.rtf', 'w')
 
 model.write("{:.4f}".format(len(coordinates))+chr(13))
