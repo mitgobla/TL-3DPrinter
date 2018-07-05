@@ -1,5 +1,5 @@
 """
-Title: Team Lig)htning EV3 Printer Code Generator
+Title: Team Lightning EV3 Printer Code Generator
 Author: Ben Dodd (mitgobla)
 Co-Author: Thomas Woodthorpe (lonewolfdesign)
 Email: ben-dodd@outlook.com
