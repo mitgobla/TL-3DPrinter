@@ -9,26 +9,26 @@ import os
 import numpy as np
 import pyqtgraph.opengl as gl
 from pyqtgraph.dockarea import *
-from pyqtgraph import mkColor, Transform3D
+from pyqtgraph import mkColor
 from pyqtgraph.Qt import QtCore, QtGui
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
 
 model = [
-    [-4, 1, 1.2, 0], 
-    [1, 1, 1, 1], 
-    [-4, 1, 1.2, 0], 
-    [3, 1, 1, 1], 
-    [-4, 1, 1.2, 0], 
-    [5, 1, 1, 1], 
-    [-4, 1, 1.2, 0], 
-    [7, 1, 1, 1], 
-    [-4, 1, 1.2, 0], 
-    [9, 1, 1, 1], 
-    [-4, 1, 1.2, 0], 
-    [11, 1, 1, 1], 
     [-4, 1, 1.2, 0],
-    [11, 3, 1, 1], 
+    [1, 1, 1, 1],
+    [-4, 1, 1.2, 0],
+    [3, 1, 1, 1],
+    [-4, 1, 1.2, 0],
+    [5, 1, 1, 1],
+    [-4, 1, 1.2, 0],
+    [7, 1, 1, 1],
+    [-4, 1, 1.2, 0],
+    [9, 1, 1, 1],
+    [-4, 1, 1.2, 0],
+    [11, 1, 1, 1],
+    [-4, 1, 1.2, 0],
+    [11, 3, 1, 1],
     [-4, 1, 1.2, 0],
     [11, 5, 1, 1],
     [-4, 1, 1.2, 0],
@@ -155,7 +155,7 @@ def brick(x, y, z, blocktype, screen):
         [1, 0, 1],
         [1, 1, 1],
         [0, 1, 1]],
-        dtype=float)
+                         dtype=float)
 
     faces_box = np.array([
         [0, 1, 2],
@@ -185,7 +185,7 @@ def brick(x, y, z, blocktype, screen):
 
     if no_skip_block:
         box = gl.GLMeshItem(vertexes=verts_box, faces=faces_box,
-                            color=color_list, glOptions='translucent', smooth=True)
+        color=color_list, glOptions='translucent', smooth=True)
         frame = gl.GLBoxItem(color=(0, 0, 0, 255))
         box.translate(x, y, z)
         frame.translate(x, y, z)
@@ -200,7 +200,7 @@ def brick(x, y, z, blocktype, screen):
         if extruder in animated_preview_widget.items:
             animated_preview_widget.removeItem(extruder)
         extruder = gl.GLBoxItem(size=QtGui.QVector3D(
-                                0.5, 0.5, 8), color=(55, 155, 55, 255))
+        0.5, 0.5, 8), color=(55, 155, 55, 255))
         extruder.translate(x+0.25, y+0.25, z+1)
         animated_preview_widget.addItem(extruder)
     elif screen == 1:
