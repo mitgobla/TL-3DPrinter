@@ -66,8 +66,12 @@ class FileLoader:
 
 
 class Display:
+    """Core functions for display
+    """
 
     def __init__(self):
+        """Core functions for display
+        """
         self.app = QtGui.QApplication([])
         self.window = QtGui.QMainWindow()
         self.area = qtdk.DockArea()
@@ -96,6 +100,9 @@ class Display:
         self.area.addDock(self.docks[-1], position)
 
     def add_gl_widget(self):
+        """Adds an OpenGL View Widget
+        """
+
         self.widgets.append(gl.GLViewWidget())
         self.widgets[-1].opts['distance'] = 20
         self.widgets[-1].show()
@@ -166,14 +173,14 @@ class Display:
             [5, 6, 7],
         ])
 
-    def add_axis_line(self, lineName, widget):
+    def add_axis_line(self, linename, widget):
         """Add an axis line to a OpenGL Widget
 
         Arguments:
             lineName {str} -- Axis name
             widget {int} -- Widget to draw line on
         """
-        line = gl.GLLinePlotItem(pos=self.premade_widgets[lineName],
+        line = gl.GLLinePlotItem(pos=self.premade_widgets[linename],
                                  color=self.premade_widgets["axis_line_colour"],
                                  width=2,
                                  antialias=True)
@@ -195,6 +202,36 @@ class Display:
         extruder_gl.translate(x_pos, y_pos, z_pos)
         self.extruders.append(extruder_gl)
         self.widgets[widget].addItem(self.extruders[-1])
+
+
+class Graphics:
+
+    def __init__(self):
+        self.root = Display()
+        self.root.initialize_widgets()
+
+    def add_box(self, x_pos, y_pos, z_pos, colour, widget):
+        """Create a brick on the display
+        
+        Arguments:
+            x_pos {float} -- X position of the brick
+            y_pos {float} -- Y position of the brick
+            z_pos {float} -- Z position of the brick
+            colour {tuple} -- RGBW of the brick
+            widget {int} -- Widget to draw brick to
+        """
+
+        box = gl.GLMeshItem(vertexes=self.root.premade_widgets["block_verts"],
+                            faces=self.root.premade_widgets["block_faces"],
+                            color=colour,
+                            glOptions='translucent',
+                            smooth=True)
+        box.translate(x_pos, y_pos, z_pos)
+        frame = gl.GLBoxItem(color=(0, 0, 0, 255))
+        frame.translate(x_pos, y_pos, z_pos)
+
+        self.root.widgets[widget].addItem(box)
+        self.root.widgets[widget].addItem(frame)
 
 
 LOADER = FileLoader()
