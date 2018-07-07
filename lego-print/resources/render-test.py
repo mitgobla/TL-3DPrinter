@@ -282,7 +282,7 @@ def update_animated():
 
     index += 1
 
-gl
+
 def update_preview():
     global rotation
     if rotation >= 360:
