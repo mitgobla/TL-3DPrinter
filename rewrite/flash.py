@@ -11,6 +11,7 @@ Website: http://www.team-lightning.ga
 import os
 
 from ast import literal_eval
+import numpy as np
 import pyqtgraph.dockarea as qtdk
 import pyqtgraph.opengl as gl
 from pyqtgraph import mkColor
@@ -63,6 +64,7 @@ class FileLoader:
 
         return literal_eval(self.file)
 
+
 class Display:
 
     def __init__(self):
@@ -76,6 +78,7 @@ class Display:
 
         self.docks = []
         self.widgets = []
+        self.premade_widgets = {}
 
     def add_dock(self, title, x, y, position):
         """Add a dock to the window
@@ -104,6 +107,62 @@ class Display:
         """
 
         self.docks[index].addWidget(widget)
+
+    def initialize_widgets(self):
+        """Creates predefined objects for OpenGL displays
+        """
+
+        self.premade_widgets["grid"] = gl.GLGridItem(
+            size=QtGui.QVector3D(8, 9, 1))
+        self.premade_widgets["grid"].setSpacing(
+            spacing=QtGui.QVector3D(0.5, 0.5, 0.5))
+        self.premade_widgets["grid"].translate(4.5, 5, 0)
+
+        self.premade_widgets["x_line"] = np.array([
+            [0, 0, 0],
+            [2, 0, 0]
+        ])
+
+        self.premade_widgets["y_line"] = np.array([
+            [0, 0, 0],
+            [0, 2, 0]
+        ])
+
+        self.premade_widgets["z_line"] = np.array([
+            [0, 0, 0],
+            [0, 0, 2]
+        ])
+
+        self.premade_widgets["axis_line_colour"] = np.array([
+            [1, 0, 0, 1],
+            [1, 0, 0, 1]
+        ])
+
+        self.premade_widgets["block_verts"] = np.array([
+            [0, 0, 0],
+            [1, 0, 0],
+            [1, 1, 0],
+            [0, 1, 0],
+            [0, 0, 1],
+            [1, 0, 1],
+            [1, 1, 1],
+            [0, 1, 1]],
+            dtype=float)
+
+        self.premade_widgets["block_faces"] = np.array([
+            [0, 1, 2],
+            [0, 2, 3],
+            [0, 1, 4],
+            [1, 5, 4],
+            [1, 2, 5],
+            [2, 5, 6],
+            [2, 3, 6],
+            [3, 6, 7],
+            [0, 3, 7],
+            [0, 4, 7],
+            [4, 5, 7],
+            [5, 6, 7],
+        ])
 
 
 LOADER = FileLoader()
