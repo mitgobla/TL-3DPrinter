@@ -205,18 +205,18 @@ class Display:
 
 
 class Graphics:
+    """Class for updating display
+    """
 
     def __init__(self):
         self.root = Display()
         self.root.initialize_widgets()
 
-    def add_box(self, x_pos, y_pos, z_pos, colour, widget):
+    def add_box(self, position, colour, widget):
         """Create a brick on the display
-        
+
         Arguments:
-            x_pos {float} -- X position of the brick
-            y_pos {float} -- Y position of the brick
-            z_pos {float} -- Z position of the brick
+            position {tuple} -- XYZ Tuple position of the brick
             colour {tuple} -- RGBW of the brick
             widget {int} -- Widget to draw brick to
         """
@@ -226,12 +226,25 @@ class Graphics:
                             color=colour,
                             glOptions='translucent',
                             smooth=True)
-        box.translate(x_pos, y_pos, z_pos)
+        box.translate(position[0], position[1], position[2])
         frame = gl.GLBoxItem(color=(0, 0, 0, 255))
-        frame.translate(x_pos, y_pos, z_pos)
+        frame.translate(position[0], position[1], position[2])
 
         self.root.widgets[widget].addItem(box)
         self.root.widgets[widget].addItem(frame)
+
+    def update_extruder(self, position, widget):
+        """Update extruder position
+
+        Arguments:
+            position {tuple} -- XYZ tuple of position
+            widget {int} -- Widget to draw extruder to
+        """
+
+        for extruder_objects in self.root.extruders:
+            if extruder_objects in self.root.widgets[widget].items:
+                self.root.widgets[widget].removeItem(extruder_objects)
+        self.root.add_extruder(widget, position[0], position[1], position[2])
 
 
 LOADER = FileLoader()
