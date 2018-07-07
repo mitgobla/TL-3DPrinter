@@ -9,9 +9,9 @@ LEGO Model generator and preview software written in Python.
 ## Backstory
 
 Team Lightning is a robotics and programming club based in Ysgol Gyfun Emlyn School in Wales. 
-**Visit [Team Lightning's Website]("http://www.team-lightning.ga")**
+Visit [Team Lightning's Website](http://www.team-lightning.ga)
 
-Team Lightning participated in the annual [Technocamps]("http://www.technocamps.com/en") competition on the 5th of July, 2018. The brief was to create a robot from LEGO Mindstorms or Arduino that could produce art or music. The team decided to create a 3-axis printer that could place 2x2 LEGO bricks on to a plate. 
+Team Lightning participated in the annual [Technocamps](http://www.technocamps.com/en) competition on the 5th of July, 2018. The brief was to create a robot from LEGO Mindstorms or Arduino that could produce art or music. The team decided to create a 3-axis printer that could place 2x2 LEGO bricks on to a plate. 
 
 This repo stores all the code we produced.
 
