@@ -212,6 +212,10 @@ class Graphics:
         self.root = Display()
         self.root.initialize_widgets()
 
+        self.current_position = (0,0,0)
+        self.coordinate_index = 0
+
+
     def add_box(self, position, colour, widget):
         """Create a brick on the display
 
@@ -245,6 +249,8 @@ class Graphics:
             if extruder_objects in self.root.widgets[widget].items:
                 self.root.widgets[widget].removeItem(extruder_objects)
         self.root.add_extruder(widget, position[0], position[1], position[2])
+
+
 
 
 LOADER = FileLoader()
