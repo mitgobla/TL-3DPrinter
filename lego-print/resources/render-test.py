@@ -245,7 +245,7 @@ def update_animated():
         for item in animated_preview_widget.items:
             animated_preview_widget.items.remove(item)
             item._setView(None)
-        
+
         animated_preview_widget.items = []
         animated_preview_widget.update()
         brick(-2, 0.5, 0.2, 1, 2)

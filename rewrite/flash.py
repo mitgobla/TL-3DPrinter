@@ -80,7 +80,9 @@ class Display:
         self.widgets = []
         self.premade_widgets = {}
 
-    def add_dock(self, title, x, y, position):
+        self.extruders = []
+
+    def add_dock(self, title, x_pos, y_pos, position):
         """Add a dock to the window
 
         Arguments:
@@ -90,7 +92,7 @@ class Display:
             position {string} -- Grid position
         """
 
-        self.docks.append(qtdk.Dock(title, size=(x, y)))
+        self.docks.append(qtdk.Dock(title, size=(x_pos, y_pos)))
         self.area.addDock(self.docks[-1], position)
 
     def add_gl_widget(self):
@@ -163,6 +165,36 @@ class Display:
             [4, 5, 7],
             [5, 6, 7],
         ])
+
+    def add_axis_line(self, lineName, widget):
+        """Add an axis line to a OpenGL Widget
+
+        Arguments:
+            lineName {str} -- Axis name
+            widget {int} -- Widget to draw line on
+        """
+        line = gl.GLLinePlotItem(pos=self.premade_widgets[lineName],
+                                 color=self.premade_widgets["axis_line_colour"],
+                                 width=2,
+                                 antialias=True)
+        line.translate(0.5, 0.5, 0)
+        self.widgets[widget].addItem(line)
+
+    def add_extruder(self, widget, x_pos, y_pos, z_pos):
+        """Add the extruder object to a OpenGL Widget
+
+        Arguments:
+            widget {int} -- Widget to draw extruder on
+            x_pos {float} -- Extruder x position
+            y_pos {float} -- Extruder y position
+            z_pos {float} -- Extruder z position
+        """
+
+        extruder_gl = gl.GLBoxItem(size=QtGui.QVector3D(
+            0.5, 0.5, 8), color=(55, 155, 55, 255))
+        extruder_gl.translate(x_pos, y_pos, z_pos)
+        self.extruders.append(extruder_gl)
+        self.widgets[widget].addItem(self.extruders[-1])
 
 
 LOADER = FileLoader()
