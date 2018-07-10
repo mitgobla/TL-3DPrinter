@@ -227,7 +227,6 @@ class Graphics:
             colour {tuple} -- RGBW of the brick
             widget {int} -- Widget to draw brick to
         """
-
         box = gl.GLMeshItem(vertexes=self.root.premade_widgets["block_verts"],
                             faces=self.root.premade_widgets["block_faces"],
                             color=colour,
@@ -261,15 +260,51 @@ class Preview:
 
     def __init__(self, model_data):
         self.graphic_engine = Graphics()
-        self.index = 0
+        self.rotation = 0
         self.model = model_data
+        self.index = len(self.model)
         self.pos = []
 
         self.red = (1, 0, 0, 0.8)
         self.blue = (0, 0, 1, 0.8)
         self.yellow = (1, 1, 0, 0.8)
+        self.next_colour = ()
 
-    def update_animated(self, widget):
+    def add_widget(self, title, pos):
+        """Add a widget for displaying objects
+
+        Arguments:
+            title {string} -- Title of the display
+            pos {string} -- Position of the display
+        """
+
+        self.graphic_engine.root.add_dock(title, 500, 300, pos)
+        self.graphic_engine.root.add_gl_widget()
+        self.graphic_engine.root.add_to_dock(-1, self.graphic_engine.root.widgets[-1])
+        self.graphic_engine.root.add_axis_line("x_line", -1)
+        self.graphic_engine.root.add_axis_line("y_line", -1)
+        self.graphic_engine.root.add_axis_line("z_line", -1)
+        self.graphic_engine.root.widgets[-1].addItem(self.graphic_engine.root.premade_widgets["grid"])
+
+    def generate_model(self, widget):
+
+        self.graphic_engine.add_box((-2, 0.5, 0.2), self.red, widget)
+        self.graphic_engine.add_box((-2, 3.5, 0.2), self.blue, widget)
+        self.graphic_engine.add_box((-2, 6.5, 0.2), self.yellow, widget)
+
+        for pos in self.model:
+            self.next_colour = ()
+            if pos[3] == 1:
+                self.next_colour = self.red
+            elif pos[3] == 2:
+                self.next_colour = self.blue
+            elif pos[3] == 3:
+                self.next_colour = self.yellow
+
+            if pos[3] != 0:
+                self.graphic_engine.add_box((pos[0]/2, pos[1]/2, pos[2]-1), self.next_colour, widget)
+
+    def update_animated(self, widget=0):
         """Update an animated widget
 
         Arguments:
@@ -284,44 +319,79 @@ class Preview:
             self.graphic_engine.root.widgets[widget].items = []
             self.graphic_engine.root.widgets[widget].update()
 
+        self.graphic_engine.add_box((-2, 0.5, 0.2), self.red, widget)
+        self.graphic_engine.add_box((-2, 3.5, 0.2), self.blue, widget)
+        self.graphic_engine.add_box((-2, 6.5, 0.2), self.yellow, widget)
+
+        self.graphic_engine.root.widgets[widget].addItem(self.graphic_engine.root.premade_widgets["grid"])
         self.graphic_engine.update_extruder(((self.model[self.index][0]/2)+0.25,
                                              (self.model[self.index]
                                               [1]/2)+0.25,
                                              self.model[self.index][2]),
-                                            self.graphic_engine.root.widgets[widget])
+                                            widget)
+        print(self.model[self.index][3])
         if self.model[self.index][3] == 1:
             self.graphic_engine.add_box((self.model[self.index][0]/2,
                                          self.model[self.index][1]/2,
                                          self.model[self.index][2]-1), self.red,
-                                        self.graphic_engine.root.widgets[widget])
+                                        widget)
         elif self.model[self.index][3] == 2:
             self.graphic_engine.add_box((self.model[self.index][0]/2,
                                          self.model[self.index][1]/2,
                                          self.model[self.index][2]-1), self.blue,
-                                        self.graphic_engine.root.widgets[widget])
+                                        widget)
         elif self.model[self.index][3] == 3:
             self.graphic_engine.add_box((self.model[self.index][0]/2,
                                          self.model[self.index][1]/2,
                                          self.model[self.index][2]-1), self.yellow,
-                                        self.graphic_engine.root.widgets[widget])
+                                        widget)
         self.index += 1
+
+    def update_frozen(self, widget=1):
+        if self.rotation >= 360:
+            self.rotation = 0
+
+        self.graphic_engine.root.widgets[widget].opts['center'] = QtGui.QVector3D(6.5, 6.5, 0)
+        self.graphic_engine.root.widgets[widget].setCameraPosition(elevation=25, azimuth=self.rotation)
+        self.rotation += 1
 
 
 # Create FLASH and RTF from coordinate file
 LOADER = FileLoader()
-LOADER.load_txt()
-MODEL = generator.Model(LOADER.file)
-MODEL.read()
-GENERATOR = generator.Generate(MODEL)
-GENERATOR.gen_model()
-GENERATOR.write_model()
+#LOADER.load_txt()
+#MODEL = generator.Model(LOADER.file)
+#MODEL.read()
+#GENERATOR = generator.Generate(MODEL)
+#GENERATOR.gen_model()
+#GENERATOR.write_model()
 
 # Load FLASH file
 LOADER.load_flash()
-MODEL_CONTENT = LOADER.file.read()
-MODEL = literal_eval(MODEL_CONTENT)
+MODEL_CONTENT = open(LOADER.file, "r")
+MODEL = literal_eval(MODEL_CONTENT.read())
+print(MODEL)
+MODEL_CONTENT.close()
 
 PREVIEWER = Preview(MODEL)
+PREVIEWER.add_widget("Animated Preview", "left") #Widget 0
+PREVIEWER.add_widget("Finished Preview", "right") #Widget 1
+PREVIEWER.generate_model(0)
+PREVIEWER.generate_model(1)
+
+
+
+A_TIMER = QtCore.QTimer()
+A_TIMER.timeout.connect(PREVIEWER.update_animated)
+A_TIMER.start(1000)
+
+
+F_TIMER = QtCore.QTimer()
+F_TIMER.timeout.connect(PREVIEWER.update_frozen)
+F_TIMER.start(50)
+
+PREVIEWER.graphic_engine.root.window.show()
+#preview_timer_animated(PREVIEWER) #0
+#preview_timer_frozen(PREVIEWER) #1
 
 
 if __name__ == '__main__':
