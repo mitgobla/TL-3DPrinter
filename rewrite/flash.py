@@ -258,10 +258,10 @@ class Preview:
     """
 
 
-    def __init__(self, model_data):
+    def __init__(self):
         self.graphic_engine = Graphics()
         self.rotation = 0
-        self.model = model_data
+        self.model = []
         self.index = len(self.model)
         self.pos = []
 
@@ -287,6 +287,17 @@ class Preview:
         self.graphic_engine.root.widgets[-1].addItem(self.graphic_engine.root.premade_widgets["grid"])
 
     def generate_model(self, widget):
+        """Generate the model on the widget
+
+        Arguments:
+            widget {int} -- Widget to generate model on
+        """
+
+        for item in self.graphic_engine.root.widgets[widget].items:
+            self.graphic_engine.root.widgets[widget].items.remove(item)
+
+        self.graphic_engine.root.widgets[widget].items = []
+        self.graphic_engine.root.widgets[widget].update()
 
         self.graphic_engine.add_box((-2, 0.5, 0.2), self.red, widget)
         self.graphic_engine.add_box((-2, 3.5, 0.2), self.blue, widget)
@@ -310,6 +321,8 @@ class Preview:
         Arguments:
             widget {int} -- Widget to update
         """
+        if self.model == []:
+            return
 
         if self.index == len(self.model):
             self.index = 0
@@ -329,7 +342,6 @@ class Preview:
                                               [1]/2)+0.25,
                                              self.model[self.index][2]),
                                             widget)
-        print(self.model[self.index][3])
         if self.model[self.index][3] == 1:
             self.graphic_engine.add_box((self.model[self.index][0]/2,
                                          self.model[self.index][1]/2,
@@ -348,6 +360,12 @@ class Preview:
         self.index += 1
 
     def update_frozen(self, widget=1):
+        """Update the frozen display
+
+        Keyword Arguments:
+            widget {int} -- Widget to update (default: {1})
+        """
+
         if self.rotation >= 360:
             self.rotation = 0
 
@@ -356,29 +374,46 @@ class Preview:
         self.rotation += 1
 
 
-# Create FLASH and RTF from coordinate file
-LOADER = FileLoader()
-#LOADER.load_txt()
-#MODEL = generator.Model(LOADER.file)
-#MODEL.read()
-#GENERATOR = generator.Generate(MODEL)
-#GENERATOR.gen_model()
-#GENERATOR.write_model()
+PREVIEWER = Preview()
 
-# Load FLASH file
-LOADER.load_flash()
-MODEL_CONTENT = open(LOADER.file, "r")
-MODEL = literal_eval(MODEL_CONTENT.read())
-print(MODEL)
-MODEL_CONTENT.close()
+def generate_flash_file():
+    """Generate a flash file for preview
+    """
 
-PREVIEWER = Preview(MODEL)
+    loader = FileLoader()
+    loader.load_txt()
+    model = generator.Model(loader.file)
+    model.read()
+    generate = generator.Generate(model)
+    generate.gen_model()
+    generate.write_model()
+
+def load_flash_file():
+    """Load a FLASH file for preview
+    """
+
+    loader = FileLoader()
+    loader.load_flash()
+    model_content = open(loader.file, "r")
+    model = literal_eval(model_content.read())
+    model_content.close()
+    PREVIEWER.model = model
+    PREVIEWER.generate_model(0)
+    PREVIEWER.generate_model(1)
+
+PREVIEWER.graphic_engine.root.add_dock("Options", 200, 300, "left")
+OPT_LAYOUT = QtGui.QGridLayout()
+OPT_GEN_BUTTON = QtGui.QPushButton('Generate FLASH Model')
+OPT_LOAD_BUTTON = QtGui.QPushButton('Load FLASH Model')
+
+OPT_GEN_BUTTON.clicked.connect(generate_flash_file)
+OPT_LOAD_BUTTON.clicked.connect(load_flash_file)
+
+PREVIEWER.graphic_engine.root.add_to_dock(-1, OPT_GEN_BUTTON)
+PREVIEWER.graphic_engine.root.add_to_dock(-1, OPT_LOAD_BUTTON)
+
 PREVIEWER.add_widget("Animated Preview", "left") #Widget 0
 PREVIEWER.add_widget("Finished Preview", "right") #Widget 1
-PREVIEWER.generate_model(0)
-PREVIEWER.generate_model(1)
-
-
 
 A_TIMER = QtCore.QTimer()
 A_TIMER.timeout.connect(PREVIEWER.update_animated)
