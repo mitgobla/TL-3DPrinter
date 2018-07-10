@@ -376,9 +376,9 @@ class Preview:
             self.rotation = 0
 
         self.graphic_engine.root.widgets[widget].opts['center'] = QtGui.QVector3D(
-            6.5, 6.5, 0)
+            5, 5, 0)
         self.graphic_engine.root.widgets[widget].setCameraPosition(
-            elevation=25, azimuth=self.rotation)
+            elevation=45, azimuth=self.rotation)
         self.rotation += 1
 
 
@@ -429,7 +429,9 @@ PREVIEWER.graphic_engine.root.add_dock("Options", 300, 300, "left")
 PREVIEWER.graphic_engine.root.add_to_dock(-1, OPT_LAYOUT)
 
 PREVIEWER.add_widget("Finished Preview", "right")  # Widget 1
-
+PREVIEWER.graphic_engine.root.area.moveDock(PREVIEWER.graphic_engine.root.docks[-1],
+                                            "above",
+                                            PREVIEWER.graphic_engine.root.docks[-3])
 
 A_TIMER = QtCore.QTimer()
 A_TIMER.timeout.connect(PREVIEWER.update_animated)
