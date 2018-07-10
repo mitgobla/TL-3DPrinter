@@ -94,14 +94,14 @@ class Generate:
     def write_model(self):
         """Write the FLASH file and the EV3 .rtf file
         """
-        if not os.path.exists(SCRIPT_DIR+'\\coordinates'):
-            os.makedirs(SCRIPT_DIR+'\\coordinates')
+        if not os.path.exists(SCRIPT_DIR+'\\models'):
+            os.makedirs(SCRIPT_DIR+'\\models')
 
-        flash_file = open(SCRIPT_DIR+'\\coordinates\\model.flash', 'w')
+        flash_file = open(SCRIPT_DIR+'\\models\\model.flash', 'w')
         flash_file.write(str(self.coordinates))
         flash_file.close()
 
-        model_file = open(SCRIPT_DIR+'\\coordinates\\model.rtf', 'w')
+        model_file = open(SCRIPT_DIR+'\\models\\model.rtf', 'w')
         model_file.write("{:.4f}".format(len(self.coordinates))+chr(13))
         for axes in range(4):
             for pos in self.coordinates:

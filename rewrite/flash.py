@@ -16,7 +16,7 @@ from ast import literal_eval
 import numpy as np
 import pyqtgraph.dockarea as qtdk
 import pyqtgraph.opengl as gl
-from pyqtgraph import mkColor
+from pyqtgraph import mkColor, LayoutWidget, SpinBox
 from pyqtgraph.Qt import QtCore, QtGui
 
 import generator
@@ -257,7 +257,6 @@ class Preview:
     """Class for updating previews
     """
 
-
     def __init__(self):
         self.graphic_engine = Graphics()
         self.rotation = 0
@@ -280,11 +279,13 @@ class Preview:
 
         self.graphic_engine.root.add_dock(title, 500, 300, pos)
         self.graphic_engine.root.add_gl_widget()
-        self.graphic_engine.root.add_to_dock(-1, self.graphic_engine.root.widgets[-1])
+        self.graphic_engine.root.add_to_dock(-1,
+                                             self.graphic_engine.root.widgets[-1])
         self.graphic_engine.root.add_axis_line("x_line", -1)
         self.graphic_engine.root.add_axis_line("y_line", -1)
         self.graphic_engine.root.add_axis_line("z_line", -1)
-        self.graphic_engine.root.widgets[-1].addItem(self.graphic_engine.root.premade_widgets["grid"])
+        self.graphic_engine.root.widgets[-1].addItem(
+            self.graphic_engine.root.premade_widgets["grid"])
 
     def generate_model(self, widget):
         """Generate the model on the widget
@@ -292,6 +293,7 @@ class Preview:
         Arguments:
             widget {int} -- Widget to generate model on
         """
+        self.index = len(self.model)
 
         for item in self.graphic_engine.root.widgets[widget].items:
             self.graphic_engine.root.widgets[widget].items.remove(item)
@@ -302,6 +304,8 @@ class Preview:
         self.graphic_engine.add_box((-2, 0.5, 0.2), self.red, widget)
         self.graphic_engine.add_box((-2, 3.5, 0.2), self.blue, widget)
         self.graphic_engine.add_box((-2, 6.5, 0.2), self.yellow, widget)
+        self.graphic_engine.root.widgets[widget].addItem(
+            self.graphic_engine.root.premade_widgets["grid"])
 
         for pos in self.model:
             self.next_colour = ()
@@ -313,7 +317,8 @@ class Preview:
                 self.next_colour = self.yellow
 
             if pos[3] != 0:
-                self.graphic_engine.add_box((pos[0]/2, pos[1]/2, pos[2]-1), self.next_colour, widget)
+                self.graphic_engine.add_box(
+                    (pos[0]/2, pos[1]/2, pos[2]-1), self.next_colour, widget)
 
     def update_animated(self, widget=0):
         """Update an animated widget
@@ -336,7 +341,8 @@ class Preview:
         self.graphic_engine.add_box((-2, 3.5, 0.2), self.blue, widget)
         self.graphic_engine.add_box((-2, 6.5, 0.2), self.yellow, widget)
 
-        self.graphic_engine.root.widgets[widget].addItem(self.graphic_engine.root.premade_widgets["grid"])
+        self.graphic_engine.root.widgets[widget].addItem(
+            self.graphic_engine.root.premade_widgets["grid"])
         self.graphic_engine.update_extruder(((self.model[self.index][0]/2)+0.25,
                                              (self.model[self.index]
                                               [1]/2)+0.25,
@@ -369,12 +375,15 @@ class Preview:
         if self.rotation >= 360:
             self.rotation = 0
 
-        self.graphic_engine.root.widgets[widget].opts['center'] = QtGui.QVector3D(6.5, 6.5, 0)
-        self.graphic_engine.root.widgets[widget].setCameraPosition(elevation=25, azimuth=self.rotation)
+        self.graphic_engine.root.widgets[widget].opts['center'] = QtGui.QVector3D(
+            6.5, 6.5, 0)
+        self.graphic_engine.root.widgets[widget].setCameraPosition(
+            elevation=25, azimuth=self.rotation)
         self.rotation += 1
 
 
 PREVIEWER = Preview()
+
 
 def generate_flash_file():
     """Generate a flash file for preview
@@ -387,6 +396,7 @@ def generate_flash_file():
     generate = generator.Generate(model)
     generate.gen_model()
     generate.write_model()
+
 
 def load_flash_file():
     """Load a FLASH file for preview
@@ -401,19 +411,21 @@ def load_flash_file():
     PREVIEWER.generate_model(0)
     PREVIEWER.generate_model(1)
 
-PREVIEWER.graphic_engine.root.add_dock("Options", 200, 300, "left")
-OPT_LAYOUT = QtGui.QGridLayout()
+PREVIEWER.graphic_engine.root.add_dock("Options", 300, 300, "left")
+OPT_LAYOUT = LayoutWidget()
 OPT_GEN_BUTTON = QtGui.QPushButton('Generate FLASH Model')
 OPT_LOAD_BUTTON = QtGui.QPushButton('Load FLASH Model')
 
 OPT_GEN_BUTTON.clicked.connect(generate_flash_file)
 OPT_LOAD_BUTTON.clicked.connect(load_flash_file)
 
-PREVIEWER.graphic_engine.root.add_to_dock(-1, OPT_GEN_BUTTON)
-PREVIEWER.graphic_engine.root.add_to_dock(-1, OPT_LOAD_BUTTON)
+OPT_LAYOUT.addWidget(OPT_GEN_BUTTON, row=0, col=0)
+OPT_LAYOUT.addWidget(OPT_LOAD_BUTTON, row=1, col=0)
 
-PREVIEWER.add_widget("Animated Preview", "left") #Widget 0
-PREVIEWER.add_widget("Finished Preview", "right") #Widget 1
+PREVIEWER.graphic_engine.root.add_to_dock(-1, OPT_LAYOUT)
+
+PREVIEWER.add_widget("Animated Preview", "left")  # Widget 0
+PREVIEWER.add_widget("Finished Preview", "right")  # Widget 1
 
 A_TIMER = QtCore.QTimer()
 A_TIMER.timeout.connect(PREVIEWER.update_animated)
@@ -424,10 +436,23 @@ F_TIMER = QtCore.QTimer()
 F_TIMER.timeout.connect(PREVIEWER.update_frozen)
 F_TIMER.start(50)
 
-PREVIEWER.graphic_engine.root.window.show()
-#preview_timer_animated(PREVIEWER) #0
-#preview_timer_frozen(PREVIEWER) #1
+def change_animated_speed(sb):
+    """Change the update speed of the animated display
 
+    Arguments:
+        sb {float} -- Interval in seconds
+    """
+
+    A_TIMER.setInterval(sb.value()*1000)
+
+OPT_LABEL = QtGui.QLabel('Change animation speed')
+OPT_LAYOUT.addWidget(OPT_LABEL, row=2, col=0)
+OPT_SPEED_SPINNER = SpinBox(value=1, step=0.1, bounds=[0.1, 5])
+OPT_SPEED_SPINNER.sigValueChanging.connect(change_animated_speed)
+OPT_LAYOUT.addWidget(OPT_SPEED_SPINNER, row=2, col=1)
+
+
+PREVIEWER.graphic_engine.root.window.show()
 
 if __name__ == '__main__':
     import sys
