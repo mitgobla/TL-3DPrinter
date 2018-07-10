@@ -219,7 +219,6 @@ class Graphics:
         self.current_position = (0, 0, 0)
         self.coordinate_index = 0
 
-
     def add_box(self, position, colour, widget):
         """Create a brick on the display
 
@@ -255,8 +254,60 @@ class Graphics:
         self.root.add_extruder(widget, position[0], position[1], position[2])
 
 
+class Preview:
+    """Class for updating previews
+    """
 
 
+    def __init__(self, model_data):
+        self.graphic_engine = Graphics()
+        self.index = 0
+        self.model = model_data
+        self.pos = []
+
+        self.red = (1, 0, 0, 0.8)
+        self.blue = (0, 0, 1, 0.8)
+        self.yellow = (1, 1, 0, 0.8)
+
+    def update_animated(self, widget):
+        """Update an animated widget
+
+        Arguments:
+            widget {int} -- Widget to update
+        """
+
+        if self.index == len(self.model):
+            self.index = 0
+            for item in self.graphic_engine.root.widgets[widget].items:
+                self.graphic_engine.root.widgets[widget].items.remove(item)
+
+            self.graphic_engine.root.widgets[widget].items = []
+            self.graphic_engine.root.widgets[widget].update()
+
+        self.graphic_engine.update_extruder(((self.model[self.index][0]/2)+0.25,
+                                             (self.model[self.index]
+                                              [1]/2)+0.25,
+                                             self.model[self.index][2]),
+                                            self.graphic_engine.root.widgets[widget])
+        if self.model[self.index][3] == 1:
+            self.graphic_engine.add_box((self.model[self.index][0]/2,
+                                         self.model[self.index][1]/2,
+                                         self.model[self.index][2]-1), self.red,
+                                        self.graphic_engine.root.widgets[widget])
+        elif self.model[self.index][3] == 2:
+            self.graphic_engine.add_box((self.model[self.index][0]/2,
+                                         self.model[self.index][1]/2,
+                                         self.model[self.index][2]-1), self.blue,
+                                        self.graphic_engine.root.widgets[widget])
+        elif self.model[self.index][3] == 3:
+            self.graphic_engine.add_box((self.model[self.index][0]/2,
+                                         self.model[self.index][1]/2,
+                                         self.model[self.index][2]-1), self.yellow,
+                                        self.graphic_engine.root.widgets[widget])
+        self.index += 1
+
+
+# Create FLASH and RTF from coordinate file
 LOADER = FileLoader()
 LOADER.load_txt()
 MODEL = generator.Model(LOADER.file)
@@ -264,6 +315,14 @@ MODEL.read()
 GENERATOR = generator.Generate(MODEL)
 GENERATOR.gen_model()
 GENERATOR.write_model()
+
+# Load FLASH file
+LOADER.load_flash()
+MODEL_CONTENT = LOADER.file.read()
+MODEL = literal_eval(MODEL_CONTENT)
+
+PREVIEWER = Preview(MODEL)
+
 
 if __name__ == '__main__':
     import sys
