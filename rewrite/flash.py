@@ -9,15 +9,16 @@ Website: http://www.team-lightning.ga
 """
 
 import os
-
+import tkinter as tk
+from tkinter import filedialog
 from ast import literal_eval
+
 import numpy as np
 import pyqtgraph.dockarea as qtdk
 import pyqtgraph.opengl as gl
 from pyqtgraph import mkColor
 from pyqtgraph.Qt import QtCore, QtGui
-import tkinter as tk
-from tkinter import filedialog
+
 import generator
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -36,7 +37,9 @@ class FileLoader:
         """Load the list of brick positions and colours
         """
         self.window.filename = filedialog.askopenfilename(
-            initialdir=SCRIPT_DIR, title="Select Coordinate file", filetypes=[("Text Files", "*.txt")])
+            initialdir=SCRIPT_DIR,
+            title="Select Coordinate file",
+            filetypes=[("Text Files", "*.txt")])
         self.file = self.window.filename
         if not self.file:
             print("No File Selected, aborting")
@@ -106,6 +109,7 @@ class Display:
         self.widgets.append(gl.GLViewWidget())
         self.widgets[-1].opts['distance'] = 20
         self.widgets[-1].show()
+        self.widgets[-1].setBackgroundColor(mkColor(155, 155, 155, 0))
 
     def add_to_dock(self, index, widget):
         """Add a widget to a dock
@@ -156,7 +160,7 @@ class Display:
             [1, 0, 1],
             [1, 1, 1],
             [0, 1, 1]],
-            dtype=float)
+                                                       dtype=float)
 
         self.premade_widgets["block_faces"] = np.array([
             [0, 1, 2],
@@ -212,7 +216,7 @@ class Graphics:
         self.root = Display()
         self.root.initialize_widgets()
 
-        self.current_position = (0,0,0)
+        self.current_position = (0, 0, 0)
         self.coordinate_index = 0
 
 
@@ -260,3 +264,8 @@ MODEL.read()
 GENERATOR = generator.Generate(MODEL)
 GENERATOR.gen_model()
 GENERATOR.write_model()
+
+if __name__ == '__main__':
+    import sys
+    if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
+        QtGui.QApplication.instance().exec_()
