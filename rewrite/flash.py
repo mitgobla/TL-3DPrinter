@@ -411,7 +411,7 @@ def load_flash_file():
     PREVIEWER.generate_model(0)
     PREVIEWER.generate_model(1)
 
-PREVIEWER.graphic_engine.root.add_dock("Options", 300, 300, "left")
+
 OPT_LAYOUT = LayoutWidget()
 OPT_GEN_BUTTON = QtGui.QPushButton('Generate FLASH Model')
 OPT_LOAD_BUTTON = QtGui.QPushButton('Load FLASH Model')
@@ -422,10 +422,14 @@ OPT_LOAD_BUTTON.clicked.connect(load_flash_file)
 OPT_LAYOUT.addWidget(OPT_GEN_BUTTON, row=0, col=0)
 OPT_LAYOUT.addWidget(OPT_LOAD_BUTTON, row=1, col=0)
 
-PREVIEWER.graphic_engine.root.add_to_dock(-1, OPT_LAYOUT)
 
 PREVIEWER.add_widget("Animated Preview", "left")  # Widget 0
+
+PREVIEWER.graphic_engine.root.add_dock("Options", 300, 300, "left")
+
 PREVIEWER.add_widget("Finished Preview", "right")  # Widget 1
+
+PREVIEWER.graphic_engine.root.add_to_dock(-1, OPT_LAYOUT)
 
 A_TIMER = QtCore.QTimer()
 A_TIMER.timeout.connect(PREVIEWER.update_animated)
