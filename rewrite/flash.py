@@ -1,7 +1,7 @@
 """
 Title: FLASH
 Description: 3D Preview software for models to be printed on
-             Team Lightning 3D printers.
+             Team Lightning 3D LEGO printers.
 
 Author: Ben Dodd (mitgobla)
 Email: ben-dodd@outlook.com
