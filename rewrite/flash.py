@@ -426,10 +426,10 @@ OPT_LAYOUT.addWidget(OPT_LOAD_BUTTON, row=1, col=0)
 PREVIEWER.add_widget("Animated Preview", "left")  # Widget 0
 
 PREVIEWER.graphic_engine.root.add_dock("Options", 300, 300, "left")
+PREVIEWER.graphic_engine.root.add_to_dock(-1, OPT_LAYOUT)
 
 PREVIEWER.add_widget("Finished Preview", "right")  # Widget 1
 
-PREVIEWER.graphic_engine.root.add_to_dock(-1, OPT_LAYOUT)
 
 A_TIMER = QtCore.QTimer()
 A_TIMER.timeout.connect(PREVIEWER.update_animated)
