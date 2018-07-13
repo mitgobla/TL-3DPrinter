@@ -78,3 +78,7 @@ Finally, it moves the head to the z-coordinate at high power, and then performs 
 ### `lego-print`
 
 This folder contains all the original code for generating models and testing previews. Creating a model that could be used by the EV3 was successful - creating a 3D display to show the model beforehand was not. However, `mitgobla` continued to create a working version called `rewrite` after the competition.
+
+## Credits
+
+PyVmMonitor was used to help develop the software. [Website](http://www.pyvmmonitor.com)
