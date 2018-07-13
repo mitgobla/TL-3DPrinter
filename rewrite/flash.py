@@ -433,14 +433,16 @@ PREVIEWER.graphic_engine.root.area.moveDock(PREVIEWER.graphic_engine.root.docks[
                                             "above",
                                             PREVIEWER.graphic_engine.root.docks[-3])
 
+#Timer for the animated display
 A_TIMER = QtCore.QTimer()
 A_TIMER.timeout.connect(PREVIEWER.update_animated)
 A_TIMER.start(1000)
 
-
+#Timer for the frozen display
 F_TIMER = QtCore.QTimer()
 F_TIMER.timeout.connect(PREVIEWER.update_frozen)
 F_TIMER.start(50)
+
 
 def change_animated_speed(sb):
     """Change the update speed of the animated display
