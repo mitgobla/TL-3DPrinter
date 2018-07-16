@@ -46,6 +46,7 @@ To change the speed of the animation, change the spinbox value. Values range fro
 ```none
 Python 3.4+
 numpy
+pyopengl
 PyQt5
 PyQTGraph
 Tkinter
