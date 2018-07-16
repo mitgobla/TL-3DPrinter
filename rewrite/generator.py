@@ -41,15 +41,22 @@ class Model:
     def read(self):
         """Read the given file.
         """
+        #Open the given file
         self.file = open(self.model_path, "r")
+        #Assuming each coordinate is per line
         self.file_list = self.file.read().split('\n')
         self.file.close()
+        #Loop through every line
+        if not self.file_list[0].startswith('#'):
+            return False
         for line in self.file_list:
+            #Ignore comments in the model
             if not line.startswith('#'):
                 next_coords = line.split(', ')
                 for pos in range(len(next_coords)):
                     next_coords[pos] = float(next_coords[pos])
                 self.coordinates.append(next_coords)
+        return True
 
     @property
     def get_model(self):

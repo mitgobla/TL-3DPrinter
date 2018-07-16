@@ -398,13 +398,15 @@ def generate_flash_file():
     """
 
     loader = FileLoader()
-    if loader.load_txt():
+    if loader.load_txt(): # Continue if a file was selected
         model = generator.Model(loader.file)
-        model.read()
-        generate = generator.Generate(model)
-        generate.gen_model()
-        generate.write_model()
-        messagebox.showinfo("Completed", "FLASH file generated as model.flash")
+        if model.read(): # Continue if a valid model file
+            generate = generator.Generate(model)
+            generate.gen_model()
+            generate.write_model()
+            messagebox.showinfo("Completed", "FLASH file generated as model.flash")
+        else:
+            messagebox.showerror("Error", "Invalid model file.")
 
 
 def load_flash_file():
