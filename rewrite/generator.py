@@ -45,10 +45,11 @@ class Model:
         self.file_list = self.file.read().split('\n')
         self.file.close()
         for line in self.file_list:
-            next_coords = line.split(', ')
-            for pos in range(len(next_coords)):
-                next_coords[pos] = float(next_coords[pos])
-            self.coordinates.append(next_coords)
+            if not line.startswith('#'):
+                next_coords = line.split(', ')
+                for pos in range(len(next_coords)):
+                    next_coords[pos] = float(next_coords[pos])
+                self.coordinates.append(next_coords)
 
     @property
     def get_model(self):
