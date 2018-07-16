@@ -10,7 +10,7 @@ Website: http://www.team-lightning.ga
 
 import os
 import tkinter as tk
-from tkinter import filedialog
+from tkinter import filedialog, messagebox
 from ast import literal_eval
 
 import numpy as np
@@ -31,6 +31,7 @@ class FileLoader:
     def __init__(self):
         self.window = tk.Tk()
         self.window.withdraw()
+        self.window.wm_iconbitmap(SCRIPT_DIR+"\\bolt-icon.ico")
         self.file = None
         self.previous = None
 
@@ -81,6 +82,10 @@ class Display:
         """Core functions for display
         """
         self.app = QtGui.QApplication([])
+        self.app_icon = QtGui.QIcon()
+        self.app_icon.addFile(SCRIPT_DIR+'\\bolt-icon.png', QtCore.QSize(128, 128))
+        self.app.setWindowIcon(self.app_icon)
+
         self.window = QtGui.QMainWindow()
         self.area = qtdk.DockArea()
 
@@ -401,6 +406,7 @@ def generate_flash_file():
         generate = generator.Generate(model)
         generate.gen_model()
         generate.write_model()
+        messagebox.showinfo("Completed", "FLASH file generated as model.flash")
 
 
 def load_flash_file():
@@ -417,25 +423,36 @@ def load_flash_file():
         PREVIEWER.generate_model(1)
 
 
+#Layout for file options
+FILE_OPT_LAYOUT = LayoutWidget()
+FILE_OPT_GEN_BUTTON = QtGui.QPushButton('Generate FLASH Model')
+FILE_OPT_LOAD_BUTTON = QtGui.QPushButton('Load FLASH Model')
+
+FILE_OPT_GEN_BUTTON.clicked.connect(generate_flash_file)
+FILE_OPT_LOAD_BUTTON.clicked.connect(load_flash_file)
+
+FILE_OPT_LAYOUT.addWidget(FILE_OPT_GEN_BUTTON, row=0, col=0)
+FILE_OPT_LAYOUT.addWidget(FILE_OPT_LOAD_BUTTON, row=1, col=0)
+
+#Layout for preview options
 OPT_LAYOUT = LayoutWidget()
-OPT_GEN_BUTTON = QtGui.QPushButton('Generate FLASH Model')
-OPT_LOAD_BUTTON = QtGui.QPushButton('Load FLASH Model')
-
-OPT_GEN_BUTTON.clicked.connect(generate_flash_file)
-OPT_LOAD_BUTTON.clicked.connect(load_flash_file)
-
-OPT_LAYOUT.addWidget(OPT_GEN_BUTTON, row=0, col=0)
-OPT_LAYOUT.addWidget(OPT_LOAD_BUTTON, row=1, col=0)
 
 
-PREVIEWER.add_widget("Animated Preview", "left")  # Widget 0
+PREVIEWER.add_widget("Animated Preview", "left")  # Widget 1 / -4
 
-PREVIEWER.graphic_engine.root.add_dock("Options", 300, 300, "left")
+PREVIEWER.graphic_engine.root.add_dock("File Options", 300, 150, "left") # Widget -3
+PREVIEWER.graphic_engine.root.add_to_dock(-1, FILE_OPT_LAYOUT)
+
+PREVIEWER.graphic_engine.root.add_dock("Options", 300, 150, "bottom") # Widget -2
 PREVIEWER.graphic_engine.root.add_to_dock(-1, OPT_LAYOUT)
 
-PREVIEWER.add_widget("Finished Preview", "right")  # Widget 1
+PREVIEWER.add_widget("Finished Preview", "right")  # Widget 1 / -1
 PREVIEWER.graphic_engine.root.area.moveDock(PREVIEWER.graphic_engine.root.docks[-1],
                                             "above",
+                                            PREVIEWER.graphic_engine.root.docks[-4])
+
+PREVIEWER.graphic_engine.root.area.moveDock(PREVIEWER.graphic_engine.root.docks[-2],
+                                            "bottom",
                                             PREVIEWER.graphic_engine.root.docks[-3])
 
 #Timer for the animated display
