@@ -32,30 +32,35 @@ class FileLoader:
         self.window = tk.Tk()
         self.window.withdraw()
         self.file = None
+        self.previous = None
 
     def load_txt(self):
         """Load the list of brick positions and colours
         """
+        self.previous = self.file
         self.window.filename = filedialog.askopenfilename(
             initialdir=SCRIPT_DIR,
             title="Select Coordinate file",
             filetypes=[("Text Files", "*.txt")])
         self.file = self.window.filename
         if not self.file:
-            print("No File Selected, aborting")
-            exit(0)
+            self.file = self.previous
+            return False
+        return True
 
     def load_flash(self):
         """Load a FLASH file
         """
+        self.previous = self.file
         self.window.filename = filedialog.askopenfilename(
             initialdir=SCRIPT_DIR,
             title="Select FLASH file",
             filetypes=[("FLASH Files", "*.flash")])
         self.file = self.window.filename
         if not self.file:
-            print("No File Selected, aborting")
-            exit(0)
+            self.file = self.previous
+            return False
+        return True
 
     @property
     def return_coordinates(self):
@@ -390,12 +395,12 @@ def generate_flash_file():
     """
 
     loader = FileLoader()
-    loader.load_txt()
-    model = generator.Model(loader.file)
-    model.read()
-    generate = generator.Generate(model)
-    generate.gen_model()
-    generate.write_model()
+    if loader.load_txt():
+        model = generator.Model(loader.file)
+        model.read()
+        generate = generator.Generate(model)
+        generate.gen_model()
+        generate.write_model()
 
 
 def load_flash_file():
@@ -403,13 +408,13 @@ def load_flash_file():
     """
 
     loader = FileLoader()
-    loader.load_flash()
-    model_content = open(loader.file, "r")
-    model = literal_eval(model_content.read())
-    model_content.close()
-    PREVIEWER.model = model
-    PREVIEWER.generate_model(0)
-    PREVIEWER.generate_model(1)
+    if loader.load_flash():
+        model_content = open(loader.file, "r")
+        model = literal_eval(model_content.read())
+        model_content.close()
+        PREVIEWER.model = model
+        PREVIEWER.generate_model(0)
+        PREVIEWER.generate_model(1)
 
 
 OPT_LAYOUT = LayoutWidget()
