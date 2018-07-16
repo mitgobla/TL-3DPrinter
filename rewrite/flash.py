@@ -498,12 +498,19 @@ def toggle_rotation(state):
             F_TIMER.start(50)
 
 def toggle_darkmode(state):
+    """Toggle background colours
+
+    Arguments:
+        state {int} -- Checkbox value
+    """
+
+
     if state == 0:
-        PREVIEWER.graphic_engine.root.widgets[-1].setBackgroundColor(mkColor(155, 0, 155, 0)) 
-        PREVIEWER.graphic_engine.root.widgets[-4].setBackgroundColor(mkColor(155, 0, 155, 0)) 
+        PREVIEWER.graphic_engine.root.widgets[-1].setBackgroundColor(mkColor(155, 155, 155, 0))
+        PREVIEWER.graphic_engine.root.widgets[-2].setBackgroundColor(mkColor(155, 155, 155, 0))
     elif state == 2:
-        PREVIEWER.graphic_engine.root.widgets[-1].setBackgroundColor(mkColor(155, 0, 155, 0))   
-        PREVIEWER.graphic_engine.root.widgets[-4].setBackgroundColor(mkColor(155, 0, 155, 0))               
+        PREVIEWER.graphic_engine.root.widgets[-1].setBackgroundColor(mkColor(20, 20, 20, 0))
+        PREVIEWER.graphic_engine.root.widgets[-2].setBackgroundColor(mkColor(20, 20, 20, 0))
 
 
 #Widgets for Preview Options Layout
@@ -523,7 +530,7 @@ OPT_LAYOUT.addWidget(OPT_ROTATE_CHECK_LABEL, row=1, col=1)
 
 OPT_DARK_CHECK = QtGui.QCheckBox()
 OPT_DARK_CHECK.stateChanged.connect(toggle_darkmode)
-OPT_DARK_CHECK.setCheckState(2)
+OPT_DARK_CHECK.setCheckState(0)
 OPT_DARK_CHECK_LABEL = QtGui.QLabel()
 OPT_DARK_CHECK_LABEL.setText("Toggle Dark Mode")
 OPT_LAYOUT.addWidget(OPT_DARK_CHECK, row=2, col=0)
