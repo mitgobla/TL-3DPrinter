@@ -497,6 +497,14 @@ def toggle_rotation(state):
         if not F_TIMER.isActive():
             F_TIMER.start(50)
 
+def toggle_darkmode(state):
+    if state == 0:
+        PREVIEWER.graphic_engine.root.widgets[-1].setBackgroundColor(mkColor(155, 0, 155, 0)) 
+        PREVIEWER.graphic_engine.root.widgets[-4].setBackgroundColor(mkColor(155, 0, 155, 0)) 
+    elif state == 2:
+        PREVIEWER.graphic_engine.root.widgets[-1].setBackgroundColor(mkColor(155, 0, 155, 0))   
+        PREVIEWER.graphic_engine.root.widgets[-4].setBackgroundColor(mkColor(155, 0, 155, 0))               
+
 
 #Widgets for Preview Options Layout
 OPT_LABEL = QtGui.QLabel('Change animation speed')
@@ -513,15 +521,13 @@ OPT_ROTATE_CHECK_LABEL.setText("Toggle Rotation")
 OPT_LAYOUT.addWidget(OPT_ROTATE_CHECK, row=1, col=0)
 OPT_LAYOUT.addWidget(OPT_ROTATE_CHECK_LABEL, row=1, col=1)
 
-OPT_ROTATE_CHECK = QtGui.QCheckBox()
-OPT_ROTATE_CHECK.stateChanged.connect(toggle_rotation)
-OPT_ROTATE_CHECK.setCheckState(2)
-OPT_ROTATE_CHECK_LABEL = QtGui.QLabel()
-OPT_ROTATE_CHECK_LABEL.setText("Toggle Dark Mode")
-OPT_LAYOUT.addWidget(OPT_ROTATE_CHECK, row=1, col=0)
-OPT_LAYOUT.addWidget(OPT_ROTATE_CHECK_LABEL, row=1, col=1)
-
-
+OPT_DARK_CHECK = QtGui.QCheckBox()
+OPT_DARK_CHECK.stateChanged.connect(toggle_darkmode)
+OPT_DARK_CHECK.setCheckState(2)
+OPT_DARK_CHECK_LABEL = QtGui.QLabel()
+OPT_DARK_CHECK_LABEL.setText("Toggle Dark Mode")
+OPT_LAYOUT.addWidget(OPT_DARK_CHECK, row=2, col=0)
+OPT_LAYOUT.addWidget(OPT_DARK_CHECK_LABEL, row=2, col=1)
 
 
 #Show the window!
