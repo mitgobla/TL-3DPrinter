@@ -513,6 +513,16 @@ OPT_ROTATE_CHECK_LABEL.setText("Toggle Rotation")
 OPT_LAYOUT.addWidget(OPT_ROTATE_CHECK, row=1, col=0)
 OPT_LAYOUT.addWidget(OPT_ROTATE_CHECK_LABEL, row=1, col=1)
 
+OPT_ROTATE_CHECK = QtGui.QCheckBox()
+OPT_ROTATE_CHECK.stateChanged.connect(toggle_rotation)
+OPT_ROTATE_CHECK.setCheckState(2)
+OPT_ROTATE_CHECK_LABEL = QtGui.QLabel()
+OPT_ROTATE_CHECK_LABEL.setText("Toggle Dark Mode")
+OPT_LAYOUT.addWidget(OPT_ROTATE_CHECK, row=1, col=0)
+OPT_LAYOUT.addWidget(OPT_ROTATE_CHECK_LABEL, row=1, col=1)
+
+
+
 
 #Show the window!
 PREVIEWER.graphic_engine.root.window.show()
