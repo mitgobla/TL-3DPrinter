@@ -463,7 +463,7 @@ PREVIEWER.graphic_engine.root.area.moveDock(PREVIEWER.graphic_engine.root.docks[
 
 #Timer for the animated display
 PREVIEWER.graphic_engine.root.widgets[-2].setCameraPosition(
-            elevation=45, azimuth=180)
+    elevation=45, azimuth=180)
 A_TIMER = QtCore.QTimer()
 A_TIMER.timeout.connect(PREVIEWER.update_animated)
 A_TIMER.start(1000)
