@@ -269,7 +269,7 @@ class Preview:
 
     def __init__(self):
         self.graphic_engine = Graphics()
-        self.rotation = 0
+        self.rotation = 180
         self.model = []
         self.index = len(self.model)
         self.pos = []
@@ -385,8 +385,6 @@ class Preview:
         if self.rotation >= 360:
             self.rotation = 0
 
-        self.graphic_engine.root.widgets[widget].opts['center'] = QtGui.QVector3D(
-            5, 5, 0)
         self.graphic_engine.root.widgets[widget].setCameraPosition(
             elevation=45, azimuth=self.rotation)
         self.rotation += 1
@@ -427,17 +425,24 @@ def load_flash_file():
 FILE_OPT_LAYOUT = LayoutWidget()
 FILE_OPT_GEN_BUTTON = QtGui.QPushButton('Generate FLASH Model')
 FILE_OPT_LOAD_BUTTON = QtGui.QPushButton('Load FLASH Model')
+FILE_OPT_GEN_LABEL = QtGui.QLabel()
+FILE_OPT_GEN_LABEL.setText("Creates a FLASH file from an text-based instruction file.\n\n\n")
+FILE_OPT_LOAD_LABEL = QtGui.QLabel()
+FILE_OPT_LOAD_LABEL.setText("Load a FLASH file to be displayed in the preview windows.\n\n\n")
 
 FILE_OPT_GEN_BUTTON.clicked.connect(generate_flash_file)
 FILE_OPT_LOAD_BUTTON.clicked.connect(load_flash_file)
 
 FILE_OPT_LAYOUT.addWidget(FILE_OPT_GEN_BUTTON, row=0, col=0)
-FILE_OPT_LAYOUT.addWidget(FILE_OPT_LOAD_BUTTON, row=1, col=0)
+FILE_OPT_LAYOUT.addWidget(FILE_OPT_GEN_LABEL, row=1, col=0)
+FILE_OPT_LAYOUT.addWidget(FILE_OPT_LOAD_BUTTON, row=2, col=0)
+FILE_OPT_LAYOUT.addWidget(FILE_OPT_LOAD_LABEL, row=3, col=0)
 
 #Layout for preview options
 OPT_LAYOUT = LayoutWidget()
 
 
+#Add Docks in correct positions
 PREVIEWER.add_widget("Animated Preview", "left")  # Widget 1 / -4
 
 PREVIEWER.graphic_engine.root.add_dock("File Options", 300, 150, "left") # Widget -3
@@ -447,6 +452,7 @@ PREVIEWER.graphic_engine.root.add_dock("Options", 300, 150, "bottom") # Widget -
 PREVIEWER.graphic_engine.root.add_to_dock(-1, OPT_LAYOUT)
 
 PREVIEWER.add_widget("Finished Preview", "right")  # Widget 1 / -1
+
 PREVIEWER.graphic_engine.root.area.moveDock(PREVIEWER.graphic_engine.root.docks[-1],
                                             "above",
                                             PREVIEWER.graphic_engine.root.docks[-4])
@@ -456,11 +462,13 @@ PREVIEWER.graphic_engine.root.area.moveDock(PREVIEWER.graphic_engine.root.docks[
                                             PREVIEWER.graphic_engine.root.docks[-3])
 
 #Timer for the animated display
+PREVIEWER.graphic_engine.root.widgets[-2].setCameraPosition(
+            elevation=45, azimuth=180)
 A_TIMER = QtCore.QTimer()
 A_TIMER.timeout.connect(PREVIEWER.update_animated)
 A_TIMER.start(1000)
-
 #Timer for the frozen display
+PREVIEWER.graphic_engine.root.widgets[-1].opts['center'] = QtGui.QVector3D(5, 5, 0)
 F_TIMER = QtCore.QTimer()
 F_TIMER.timeout.connect(PREVIEWER.update_frozen)
 F_TIMER.start(50)
@@ -475,13 +483,38 @@ def change_animated_speed(sb):
 
     A_TIMER.setInterval(sb.value()*1000)
 
+def toggle_rotation(state):
+    """Toggle the animation state of the display
+
+    Arguments:
+        state {int} -- Checkbox value
+    """
+
+    if state == 0:
+        if F_TIMER.isActive():
+            F_TIMER.stop()
+    elif state == 2:
+        if not F_TIMER.isActive():
+            F_TIMER.start(50)
+
+
+#Widgets for Preview Options Layout
 OPT_LABEL = QtGui.QLabel('Change animation speed')
-OPT_LAYOUT.addWidget(OPT_LABEL, row=2, col=0)
+OPT_LAYOUT.addWidget(OPT_LABEL, row=0, col=0)
 OPT_SPEED_SPINNER = SpinBox(value=1, step=0.1, bounds=[0.1, 5])
 OPT_SPEED_SPINNER.sigValueChanging.connect(change_animated_speed)
-OPT_LAYOUT.addWidget(OPT_SPEED_SPINNER, row=2, col=1)
+OPT_LAYOUT.addWidget(OPT_SPEED_SPINNER, row=0, col=1)
+
+OPT_ROTATE_CHECK = QtGui.QCheckBox()
+OPT_ROTATE_CHECK.stateChanged.connect(toggle_rotation)
+OPT_ROTATE_CHECK.setCheckState(2)
+OPT_ROTATE_CHECK_LABEL = QtGui.QLabel()
+OPT_ROTATE_CHECK_LABEL.setText("Toggle Rotation")
+OPT_LAYOUT.addWidget(OPT_ROTATE_CHECK, row=1, col=0)
+OPT_LAYOUT.addWidget(OPT_ROTATE_CHECK_LABEL, row=1, col=1)
 
 
+#Show the window!
 PREVIEWER.graphic_engine.root.window.show()
 
 if __name__ == '__main__':
