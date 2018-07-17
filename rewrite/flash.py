@@ -474,14 +474,14 @@ F_TIMER.timeout.connect(PREVIEWER.update_frozen)
 F_TIMER.start(50)
 
 
-def change_animated_speed(sb):
+def change_animated_speed(state):
     """Change the update speed of the animated display
 
     Arguments:
-        sb {float} -- Interval in seconds
+        state {float} -- Interval in seconds
     """
 
-    A_TIMER.setInterval(sb.value()*1000)
+    A_TIMER.setInterval(state.value()*1000)
 
 def toggle_rotation(state):
     """Toggle the animation state of the display
@@ -505,10 +505,10 @@ def toggle_darkmode(state):
     """
 
 
-    if state == 0:
+    if state == 0: #Unchecked
         PREVIEWER.graphic_engine.root.widgets[-1].setBackgroundColor(mkColor(155, 155, 155, 0))
         PREVIEWER.graphic_engine.root.widgets[-2].setBackgroundColor(mkColor(155, 155, 155, 0))
-    elif state == 2:
+    elif state == 2: #Checked
         PREVIEWER.graphic_engine.root.widgets[-1].setBackgroundColor(mkColor(20, 20, 20, 0))
         PREVIEWER.graphic_engine.root.widgets[-2].setBackgroundColor(mkColor(20, 20, 20, 0))
 
