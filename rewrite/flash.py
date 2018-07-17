@@ -17,7 +17,7 @@ from ast import literal_eval
 import numpy as np
 import pyqtgraph.dockarea as qtdk
 import pyqtgraph.opengl as gl
-from pyqtgraph import mkColor, LayoutWidget
+from pyqtgraph import mkColor, LayoutWidget, ColorButton
 from pyqtgraph.Qt import QtCore, QtGui
 
 import generator
@@ -443,22 +443,22 @@ FILE_OPT_LAYOUT.addWidget(FILE_OPT_GEN_LABEL, row=1, col=0)
 FILE_OPT_LAYOUT.addWidget(FILE_OPT_LOAD_BUTTON, row=2, col=0)
 FILE_OPT_LAYOUT.addWidget(FILE_OPT_LOAD_LABEL, row=3, col=0)
 
-#Layout for preview options
 OPT_LAYOUT = LayoutWidget()
-
+SETTINGS_LAYOUT = LayoutWidget()
 
 #Add Docks in correct positions
+PREVIEWER.graphic_engine.root.add_dock("Settings", 150, 150, "bottom") #Widget -5
+PREVIEWER.graphic_engine.root.add_to_dock(-1, SETTINGS_LAYOUT)
+
 PREVIEWER.add_widget("Animated Preview", "left")  # Widget 1 / -4
 
-PREVIEWER.graphic_engine.root.add_dock("File Options", 150, 150, "left") # Widget -3
+PREVIEWER.graphic_engine.root.add_dock("File Options", 150, 100, "left") # Widget -3
 PREVIEWER.graphic_engine.root.add_to_dock(-1, FILE_OPT_LAYOUT)
-PREVIEWER.graphic_engine.root.docks[-1].hideTitleBar()
 
-PREVIEWER.graphic_engine.root.add_dock("Options", 150, 150, "bottom") # Widget -2
+PREVIEWER.graphic_engine.root.add_dock("Preview Options", 150, 150, "bottom") # Widget -2
 PREVIEWER.graphic_engine.root.add_to_dock(-1, OPT_LAYOUT)
-PREVIEWER.graphic_engine.root.docks[-1].hideTitleBar()
 
-PREVIEWER.add_widget("Finished Preview", "right")  # Widget 1 / -1
+PREVIEWER.add_widget("Finished Preview", "right")  # Widget 2 / -1
 
 PREVIEWER.graphic_engine.root.area.moveDock(PREVIEWER.graphic_engine.root.docks[-1],
                                             "above",
@@ -467,6 +467,11 @@ PREVIEWER.graphic_engine.root.area.moveDock(PREVIEWER.graphic_engine.root.docks[
 PREVIEWER.graphic_engine.root.area.moveDock(PREVIEWER.graphic_engine.root.docks[-2],
                                             "bottom",
                                             PREVIEWER.graphic_engine.root.docks[-3])
+
+PREVIEWER.graphic_engine.root.area.moveDock(PREVIEWER.graphic_engine.root.docks[-5],
+                                            "above",
+                                            PREVIEWER.graphic_engine.root.docks[-2])
+
 
 #Timer for the animated display
 PREVIEWER.graphic_engine.root.widgets[-2].setCameraPosition(
@@ -562,13 +567,22 @@ OPT_ROTATE_CHECK_LABEL.setText("Toggle Rotation")
 OPT_LAYOUT.addWidget(OPT_ROTATE_CHECK, row=2, col=0)
 OPT_LAYOUT.addWidget(OPT_ROTATE_CHECK_LABEL, row=2, col=1)
 
+
+#Settings widgets
 OPT_DARK_CHECK = QtGui.QCheckBox()
 OPT_DARK_CHECK.stateChanged.connect(toggle_darkmode)
 OPT_DARK_CHECK.setCheckState(0)
 OPT_DARK_CHECK_LABEL = QtGui.QLabel()
 OPT_DARK_CHECK_LABEL.setText("Toggle Dark Mode")
-OPT_LAYOUT.addWidget(OPT_DARK_CHECK, row=3, col=0)
-OPT_LAYOUT.addWidget(OPT_DARK_CHECK_LABEL, row=3, col=1)
+SETTINGS_LAYOUT.addWidget(OPT_DARK_CHECK, row=3, col=0)
+SETTINGS_LAYOUT.addWidget(OPT_DARK_CHECK_LABEL, row=3, col=1)
+
+OPT_COLOUR_BUTTON = ColorButton()
+
+def colour_changed(button):
+    PREVIEWER.graphic_engine.root.widgets[-1].setBackgroundColor(button.color())
+OPT_COLOUR_BUTTON.sigColorChanged.connect(colour_changed)
+SETTINGS_LAYOUT.addWidget(OPT_COLOUR_BUTTON, row=4, col=0)
 
 #Show the window!
 PREVIEWER.graphic_engine.root.window.show()
