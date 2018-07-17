@@ -17,7 +17,7 @@ from ast import literal_eval
 import numpy as np
 import pyqtgraph.dockarea as qtdk
 import pyqtgraph.opengl as gl
-from pyqtgraph import mkColor, LayoutWidget, SpinBox
+from pyqtgraph import mkColor, LayoutWidget
 from pyqtgraph.Qt import QtCore, QtGui
 
 import generator
@@ -497,7 +497,7 @@ def change_rotation_speed(state):
         state {float} -- Interval in seconds
     """
 
-    F_TIMER.setInterval(state.value()*100)
+    F_TIMER.setInterval((21-state)*5)
 
 def toggle_rotation(state):
     """Toggle the animation state of the display
@@ -535,16 +535,24 @@ OPT_SPEED_SLIDER_1 = QtGui.QSlider(0x1)
 OPT_SPEED_SLIDER_1.setMinimum(1)
 OPT_SPEED_SLIDER_1.setSingleStep(1)
 OPT_SPEED_SLIDER_1.setMaximum(20)
-OPT_SPEED_SLIDER_1.setTickInterval(5)
+OPT_SPEED_SLIDER_1.setTickInterval(1)
 OPT_SPEED_SLIDER_1.setTickPosition(1)
 OPT_SPEED_SLIDER_1.sliderMoved.connect(change_animated_speed)
 OPT_LAYOUT.addWidget(OPT_SPEED_SLIDER_1, row=0, col=1)
 
 OPT_LABEL_2 = QtGui.QLabel('Change rotation speed')
 OPT_LAYOUT.addWidget(OPT_LABEL_2, row=1, col=0)
-OPT_SPEED_SPINNER_2 = SpinBox(value=1, step=0.1, bounds=[0.1, 1])
-OPT_SPEED_SPINNER_2.sigValueChanging.connect(change_rotation_speed)
-OPT_LAYOUT.addWidget(OPT_SPEED_SPINNER_2, row=1, col=1)
+OPT_SPEED_SLIDER_2 = QtGui.QSlider(0x1)
+OPT_SPEED_SLIDER_2.setMinimum(1)
+OPT_SPEED_SLIDER_2.setSingleStep(1)
+OPT_SPEED_SLIDER_2.setMaximum(20)
+OPT_SPEED_SLIDER_2.setTickInterval(1)
+OPT_SPEED_SLIDER_2.setTickPosition(1)
+OPT_SPEED_SLIDER_2.sliderMoved.connect(change_rotation_speed)
+OPT_LAYOUT.addWidget(OPT_SPEED_SLIDER_2, row=1, col=1)
+#OPT_SPEED_SPINNER_2 = SpinBox(value=1, step=0.1, bounds=[0.1, 1])
+#OPT_SPEED_SPINNER_2.sigValueChanging.connect(change_rotation_speed)
+#OPT_LAYOUT.addWidget(OPT_SPEED_SPINNER_2, row=1, col=1)
 
 OPT_ROTATE_CHECK = QtGui.QCheckBox()
 OPT_ROTATE_CHECK.stateChanged.connect(toggle_rotation)
