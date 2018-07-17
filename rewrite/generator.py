@@ -47,6 +47,8 @@ class Model:
         for line in self.file_list:
             if not line.startswith('#'):
                 next_coords = line.split(', ')
+                if len(next_coords) != 4:
+                    return False
                 for pos in range(len(next_coords)):
                     next_coords[pos] = float(next_coords[pos])
                 self.coordinates.append(next_coords)
