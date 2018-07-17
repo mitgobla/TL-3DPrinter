@@ -240,8 +240,8 @@ class Graphics:
         box = gl.GLMeshItem(vertexes=self.root.premade_widgets["block_verts"],
                             faces=self.root.premade_widgets["block_faces"],
                             color=colour,
-                            glOptions='translucent',
-                            smooth=True)
+                            glOptions='opaque',
+                            smooth=False)
         box.translate(position[0], position[1], position[2])
         frame = gl.GLBoxItem(color=(0, 0, 0, 255))
         frame.translate(position[0], position[1], position[2])
@@ -274,9 +274,9 @@ class Preview:
         self.index = len(self.model)
         self.pos = []
 
-        self.red = (1, 0, 0, 0.8)
-        self.blue = (0, 0, 1, 0.8)
-        self.yellow = (1, 1, 0, 0.8)
+        self.red = (1, 0, 0, 1)
+        self.blue = (0, 0, 1, 1)
+        self.yellow = (1, 1, 0, 1)
         self.next_colour = ()
 
     def add_widget(self, title, pos):
@@ -347,12 +347,13 @@ class Preview:
             self.graphic_engine.root.widgets[widget].items = []
             self.graphic_engine.root.widgets[widget].update()
 
-        self.graphic_engine.add_box((-2, 0.5, 0.2), self.red, widget)
-        self.graphic_engine.add_box((-2, 3.5, 0.2), self.blue, widget)
-        self.graphic_engine.add_box((-2, 6.5, 0.2), self.yellow, widget)
+            self.graphic_engine.add_box((-2, 0.5, 0.2), self.red, widget)
+            self.graphic_engine.add_box((-2, 3.5, 0.2), self.blue, widget)
+            self.graphic_engine.add_box((-2, 6.5, 0.2), self.yellow, widget)
 
-        self.graphic_engine.root.widgets[widget].addItem(
-            self.graphic_engine.root.premade_widgets["grid"])
+            self.graphic_engine.root.widgets[widget].addItem(
+                self.graphic_engine.root.premade_widgets["grid"])
+
         self.graphic_engine.update_extruder(((self.model[self.index][0]/2)+0.25,
                                              (self.model[self.index]
                                               [1]/2)+0.25,
@@ -447,10 +448,10 @@ OPT_LAYOUT = LayoutWidget()
 #Add Docks in correct positions
 PREVIEWER.add_widget("Animated Preview", "left")  # Widget 1 / -4
 
-PREVIEWER.graphic_engine.root.add_dock("File Options", 300, 150, "left") # Widget -3
+PREVIEWER.graphic_engine.root.add_dock("File Options", 150, 150, "left") # Widget -3
 PREVIEWER.graphic_engine.root.add_to_dock(-1, FILE_OPT_LAYOUT)
 
-PREVIEWER.graphic_engine.root.add_dock("Options", 300, 150, "bottom") # Widget -2
+PREVIEWER.graphic_engine.root.add_dock("Options", 150, 150, "bottom") # Widget -2
 PREVIEWER.graphic_engine.root.add_to_dock(-1, OPT_LAYOUT)
 
 PREVIEWER.add_widget("Finished Preview", "right")  # Widget 1 / -1
@@ -476,14 +477,23 @@ F_TIMER.timeout.connect(PREVIEWER.update_frozen)
 F_TIMER.start(50)
 
 
-def change_animated_speed(sb):
+def change_animated_speed(state):
     """Change the update speed of the animated display
 
     Arguments:
-        sb {float} -- Interval in seconds
+        state {float} -- Interval in seconds
     """
 
-    A_TIMER.setInterval(sb.value()*1000)
+    A_TIMER.setInterval((21-state)*100)
+
+def change_rotation_speed(state):
+    """Change the update speed of the frozen display
+
+    Arguments:
+        state {float} -- Interval in seconds
+    """
+
+    F_TIMER.setInterval(state.value()*100)
 
 def toggle_rotation(state):
     """Toggle the animation state of the display
@@ -499,22 +509,54 @@ def toggle_rotation(state):
         if not F_TIMER.isActive():
             F_TIMER.start(50)
 
+def toggle_darkmode(state):
+    """Toggle background colours
+
+    Arguments:
+        state {int} -- Checkbox value
+    """
+
+    if state == 0: #Unchecked
+        PREVIEWER.graphic_engine.root.widgets[-1].setBackgroundColor(mkColor(155, 155, 155, 0))
+        PREVIEWER.graphic_engine.root.widgets[-2].setBackgroundColor(mkColor(155, 155, 155, 0))
+    elif state == 2: #Checked
+        PREVIEWER.graphic_engine.root.widgets[-1].setBackgroundColor(mkColor(20, 20, 20, 0))
+        PREVIEWER.graphic_engine.root.widgets[-2].setBackgroundColor(mkColor(20, 20, 20, 0))
+
 
 #Widgets for Preview Options Layout
-OPT_LABEL = QtGui.QLabel('Change animation speed')
-OPT_LAYOUT.addWidget(OPT_LABEL, row=0, col=0)
-OPT_SPEED_SPINNER = SpinBox(value=1, step=0.1, bounds=[0.1, 5])
-OPT_SPEED_SPINNER.sigValueChanging.connect(change_animated_speed)
-OPT_LAYOUT.addWidget(OPT_SPEED_SPINNER, row=0, col=1)
+OPT_LABEL_1 = QtGui.QLabel('Change animation speed')
+OPT_LAYOUT.addWidget(OPT_LABEL_1, row=0, col=0)
+OPT_SPEED_SLIDER_1 = QtGui.QSlider(0x1)
+OPT_SPEED_SLIDER_1.setMinimum(1)
+OPT_SPEED_SLIDER_1.setSingleStep(1)
+OPT_SPEED_SLIDER_1.setMaximum(20)
+OPT_SPEED_SLIDER_1.setTickInterval(5)
+OPT_SPEED_SLIDER_1.setTickPosition(1)
+OPT_SPEED_SLIDER_1.sliderMoved.connect(change_animated_speed)
+OPT_LAYOUT.addWidget(OPT_SPEED_SLIDER_1, row=0, col=1)
+
+OPT_LABEL_2 = QtGui.QLabel('Change rotation speed')
+OPT_LAYOUT.addWidget(OPT_LABEL_2, row=1, col=0)
+OPT_SPEED_SPINNER_2 = SpinBox(value=1, step=0.1, bounds=[0.1, 1])
+OPT_SPEED_SPINNER_2.sigValueChanging.connect(change_rotation_speed)
+OPT_LAYOUT.addWidget(OPT_SPEED_SPINNER_2, row=1, col=1)
 
 OPT_ROTATE_CHECK = QtGui.QCheckBox()
 OPT_ROTATE_CHECK.stateChanged.connect(toggle_rotation)
 OPT_ROTATE_CHECK.setCheckState(2)
 OPT_ROTATE_CHECK_LABEL = QtGui.QLabel()
 OPT_ROTATE_CHECK_LABEL.setText("Toggle Rotation")
-OPT_LAYOUT.addWidget(OPT_ROTATE_CHECK, row=1, col=0)
-OPT_LAYOUT.addWidget(OPT_ROTATE_CHECK_LABEL, row=1, col=1)
+OPT_LAYOUT.addWidget(OPT_ROTATE_CHECK, row=2, col=0)
+OPT_LAYOUT.addWidget(OPT_ROTATE_CHECK_LABEL, row=2, col=1)
 
+OPT_DARK_CHECK = QtGui.QCheckBox()
+OPT_DARK_CHECK.stateChanged.connect(toggle_darkmode)
+OPT_DARK_CHECK.setCheckState(0)
+OPT_DARK_CHECK_LABEL = QtGui.QLabel()
+OPT_DARK_CHECK_LABEL.setText("Toggle Dark Mode")
+OPT_LAYOUT.addWidget(OPT_DARK_CHECK, row=3, col=0)
+OPT_LAYOUT.addWidget(OPT_DARK_CHECK_LABEL, row=3, col=1)
 
 #Show the window!
 PREVIEWER.graphic_engine.root.window.show()
