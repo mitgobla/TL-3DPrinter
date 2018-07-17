@@ -8,6 +8,7 @@ Email: ben-dodd@outlook.com
 Website: http://www.team-lightning.ga
 """
 
+import ctypes
 import os
 import tkinter as tk
 from tkinter import filedialog, messagebox
@@ -22,7 +23,8 @@ from pyqtgraph.Qt import QtCore, QtGui
 import generator
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
-
+APP_ID = "mitgobla.teamlightning.flash.alpha"
+ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(APP_ID)
 
 class FileLoader:
     """Loads a text file of coordinates and colours
@@ -450,9 +452,11 @@ PREVIEWER.add_widget("Animated Preview", "left")  # Widget 1 / -4
 
 PREVIEWER.graphic_engine.root.add_dock("File Options", 150, 150, "left") # Widget -3
 PREVIEWER.graphic_engine.root.add_to_dock(-1, FILE_OPT_LAYOUT)
+PREVIEWER.graphic_engine.root.docks[-1].hideTitleBar()
 
 PREVIEWER.graphic_engine.root.add_dock("Options", 150, 150, "bottom") # Widget -2
 PREVIEWER.graphic_engine.root.add_to_dock(-1, OPT_LAYOUT)
+PREVIEWER.graphic_engine.root.docks[-1].hideTitleBar()
 
 PREVIEWER.add_widget("Finished Preview", "right")  # Widget 1 / -1
 
