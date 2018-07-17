@@ -446,10 +446,10 @@ OPT_LAYOUT = LayoutWidget()
 #Add Docks in correct positions
 PREVIEWER.add_widget("Animated Preview", "left")  # Widget 1 / -4
 
-PREVIEWER.graphic_engine.root.add_dock("File Options", 300, 150, "left") # Widget -3
+PREVIEWER.graphic_engine.root.add_dock("File Options", 150, 150, "left") # Widget -3
 PREVIEWER.graphic_engine.root.add_to_dock(-1, FILE_OPT_LAYOUT)
 
-PREVIEWER.graphic_engine.root.add_dock("Options", 300, 150, "bottom") # Widget -2
+PREVIEWER.graphic_engine.root.add_dock("Options", 150, 150, "bottom") # Widget -2
 PREVIEWER.graphic_engine.root.add_to_dock(-1, OPT_LAYOUT)
 
 PREVIEWER.add_widget("Finished Preview", "right")  # Widget 1 / -1
