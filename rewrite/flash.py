@@ -26,6 +26,8 @@ SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 APP_ID = "mitgobla.teamlightning.flash.alpha"
 ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(APP_ID)
 
+backgroundcolor = 0x000001E524501C88 
+
 class FileLoader:
     """Loads a text file of coordinates and colours
     """
@@ -529,8 +531,8 @@ def toggle_darkmode(state):
         PREVIEWER.graphic_engine.root.widgets[-1].setBackgroundColor(mkColor(155, 155, 155, 0))
         PREVIEWER.graphic_engine.root.widgets[-2].setBackgroundColor(mkColor(155, 155, 155, 0))
     elif state == 2: #Checked
-        PREVIEWER.graphic_engine.root.widgets[-1].setBackgroundColor(mkColor(20, 20, 20, 0))
-        PREVIEWER.graphic_engine.root.widgets[-2].setBackgroundColor(mkColor(20, 20, 20, 0))
+        PREVIEWER.graphic_engine.root.widgets[-1].setBackgroundColor(backgroundcolor)
+        PREVIEWER.graphic_engine.root.widgets[-2].setBackgroundColor(backgroundcolor)
 
 
 #Widgets for Preview Options Layout
@@ -581,6 +583,8 @@ OPT_COLOUR_BUTTON = ColorButton()
 
 def colour_changed(button):
     PREVIEWER.graphic_engine.root.widgets[-1].setBackgroundColor(button.color())
+    print(button.color())
+    backgroundcolor = button.color()
 OPT_COLOUR_BUTTON.sigColorChanged.connect(colour_changed)
 SETTINGS_LAYOUT.addWidget(OPT_COLOUR_BUTTON, row=4, col=0)
 
