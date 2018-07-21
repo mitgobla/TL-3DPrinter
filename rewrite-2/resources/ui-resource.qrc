@@ -1,0 +1,7 @@
+<RCC>
+  <qresource prefix="logo">
+    <file>flash-software-128.png</file>
+    <file>flash-software-256.png</file>
+    <file>flash-software-762.png</file>
+  </qresource>
+</RCC>
