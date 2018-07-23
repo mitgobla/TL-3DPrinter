@@ -48,6 +48,9 @@
     <property name="focusPolicy">
      <enum>Qt::NoFocus</enum>
     </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
    </widget>
    <widget class="QSlider" name="slider_layer">
     <property name="geometry">
@@ -748,7 +751,7 @@
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionNew"/>
+    <addaction name="actionOpen"/>
     <addaction name="actionConvert"/>
    </widget>
    <widget class="QMenu" name="menuAbout">
@@ -760,7 +763,7 @@
    <addaction name="menuFile"/>
    <addaction name="menuAbout"/>
   </widget>
-  <action name="actionNew">
+  <action name="actionOpen">
    <property name="text">
     <string>Open</string>
    </property>
