@@ -138,10 +138,10 @@ class Display:
         """
 
         self.premade_widgets["grid"] = gl.GLGridItem(
-            size=QtGui.QVector3D(8, 9, 1))
+            size=QtGui.QVector3D(9, 8, 1))
         self.premade_widgets["grid"].setSpacing(
             spacing=QtGui.QVector3D(0.5, 0.5, 0.5))
-        self.premade_widgets["grid"].translate(4.5, 5, 0)
+        self.premade_widgets["grid"].translate(5, 4.5, 0)
 
         self.premade_widgets["x_line"] = np.array([
             [0, 0, 0],
