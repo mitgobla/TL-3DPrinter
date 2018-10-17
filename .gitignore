@@ -1,3 +1,4 @@
 .vscode/*
 rewrite-2/__pycache__/*
 rewrite-2/__pycache__/main_window.cpython-36.pyc
+*.pyc

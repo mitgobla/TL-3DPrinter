@@ -22,7 +22,7 @@ class Ui_MainWindow(object):
         self.centralwidget.setObjectName("centralwidget")
         self.openGL_preview = QtWidgets.QOpenGLWidget(self.centralwidget)
         self.openGL_preview.setMouseTracking(True)
-        self.openGL_preview.setBackgroundColor(QtGui.QColor([155, 155, 155, 0]))
+        #self.openGL_preview.setBackgroundColor(QtGui.QColor([155, 155, 155, 0]))
         self.openGL_preview.setFocusPolicy(QtCore.Qt.NoFocus)
         self.openGL_preview.setObjectName("openGL_preview")
         self.slider_layer = QtWidgets.QSlider(self.centralwidget)
