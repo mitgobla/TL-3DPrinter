@@ -8,6 +8,10 @@
 
 LEGO Model generator and preview software written in Python.
 
+# This repository does not contain the [FLASH Builder Software](https://github.com/mitgobla/Flash-Builder).
+
+This repository has all the resources we used during the competition. Code may be messy and have unknown bugs.
+
 ## Backstory
 
 Team Lightning is a robotics and programming club based in Ysgol Gyfun Emlyn School in Wales.
